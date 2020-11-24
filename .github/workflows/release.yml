@@ -1,0 +1,37 @@
+name: release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: check
+        run: |
+          PRIOR_VERSION=$(git describe --abbrev=0 --tags)
+          RELEASE_VERSION=$(grep current_version ${{ github.action_path }}/.bumpversion.cfg | sed 's/^.*= //' )
+          test "$PRIOR_VERSION" != "$RELEASE_VERSION"
+          echo "::set-output name=release_version::$RELEASE_VERSION"
+      - name: skip
+        if: failure()
+        run: |
+          echo "Version has not incremented, skipping release"
+      - name: release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ steps.check.output.release_version }}
+        with:
+          commitish: ${{ github.sha }}
+          tag_name: ${{ steps.check.output.release_version }}
+          release_name: ${{ steps.check.output.release_version }}
+          body: |
+            * [terraform-aws-tardigrade-guardduty v${RELEASE_VERSION} CHANGELOG](https://github.com/plus3it/terraform-aws-tardigrade-guardduty/blob/${RELEASE_VERSION}/CHANGELOG.md)
+          draft: false
+          prerelease: false
