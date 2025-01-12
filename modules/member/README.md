@@ -34,7 +34,7 @@ Note: the implementation `tests/create_guardduty_member` will require you to pro
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_member"></a> [member](#input\_member) | GuardDuty member | <pre>object({<br>    email                      = string # (Required) Email address for member account.<br>    invitation_message         = string # (Optional) Message for invitation.<br>    disable_email_notification = bool   # (Optional) Boolean whether an email notification is sent to the accounts. Defaults to false.<br>  })</pre> | n/a | yes |
+| <a name="input_member"></a> [member](#input\_member) | GuardDuty member | <pre>object({<br/>    email                      = string # (Required) Email address for member account.<br/>    invitation_message         = string # (Optional) Message for invitation.<br/>    disable_email_notification = bool   # (Optional) Boolean whether an email notification is sent to the accounts. Defaults to false.<br/>  })</pre> | n/a | yes |
 | <a name="input_enable"></a> [enable](#input\_enable) | (Optional) Enable monitoring and feedback reporting. Setting to false is equivalent to 'suspending' GuardDuty. Defaults to true. | `bool` | `true` | no |
 | <a name="input_enable_kubernetes_protection"></a> [enable\_kubernetes\_protection](#input\_enable\_kubernetes\_protection) | (Required) If true, enables S3 Protection. Defaults to true. | `bool` | `true` | no |
 | <a name="input_enable_malware_protection"></a> [enable\_malware\_protection](#input\_enable\_malware\_protection) | (Required) If true, enables S3 Protection. Defaults to true. | `bool` | `true` | no |
