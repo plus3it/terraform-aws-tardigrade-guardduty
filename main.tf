@@ -102,13 +102,22 @@ resource "aws_guardduty_publishing_destination" "this" {
 
 # Provides a resource to manage a GuardDuty malware protection plan.
 resource "aws_guardduty_malware_protection_plan" "this" {
-  for_each = toset(var.protected_buckets)
+  for_each = var.protection_plans
 
   protected_resource {
     s3_bucket {
-      bucket_name = each.value
+      bucket_name     = each.value.protected_resource.s3_bucket.bucket_name
+      object_prefixes = each.value.protected_resource.s3_bucket.object_prefixes
     }
   }
 
-  role = var.role_arn
+  actions {
+    tagging {
+      status = each.value.actions.tagging.status
+    }
+  }
+
+  region = each.value.region
+  role   = each.value.role
+  tags   = each.value.tags
 }

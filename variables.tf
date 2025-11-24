@@ -65,12 +65,6 @@ variable "ipsets" {
   default = []
 }
 
-variable "role_arn" {
-  description = "ARN of the IAM role for GuardDuty"
-  type        = string
-  default     = null
-}
-
 variable "threatintelsets" {
   description = "GuardDuty threatintelset list"
   type = list(object({
@@ -83,10 +77,27 @@ variable "threatintelsets" {
   default = []
 }
 
-variable "protected_buckets" {
-  description = "S3 buckets to scan for malware"
-  type        = list(string)
-  default     = []
+variable "protection_plans" {
+  description = "Provides a resource to manage a GuardDuty malware protection plan."
+  type = map(object({
+    role   = string
+    region = optional(string)
+    tags   = optional(map(string))
+
+    actions = optional(object({
+      tagging = object({
+        status = string
+      })
+    }))
+
+    protected_resource = object({
+      s3_bucket = object({
+        bucket_name     = string
+        object_prefixes = optional(list(string))
+      })
+    })
+  }))
+  default = null
 }
 
 variable "publishing_destination" {
