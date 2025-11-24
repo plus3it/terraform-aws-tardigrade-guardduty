@@ -99,3 +99,16 @@ resource "aws_guardduty_publishing_destination" "this" {
   kms_key_arn      = var.publishing_destination.kms_key_arn
   destination_type = "S3" # S3 is currently the only option for this
 }
+
+# Provides a resource to manage a GuardDuty malware protection plan.
+resource "aws_guardduty_malware_protection_plan" "this" {
+  for_each = toset(var.protected_buckets)
+
+  protected_resource {
+    s3_bucket {
+      bucket_name = each.value
+    }
+  }
+
+  role = var.role_arn
+}

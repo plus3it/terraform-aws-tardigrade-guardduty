@@ -65,6 +65,12 @@ variable "ipsets" {
   default = []
 }
 
+variable "role_arn" {
+  description = "ARN of the IAM role for GuardDuty"
+  type        = string
+  default     = null
+}
+
 variable "threatintelsets" {
   description = "GuardDuty threatintelset list"
   type = list(object({
@@ -75,6 +81,12 @@ variable "threatintelsets" {
     tags     = map(string) # (Optional) Key-value map of resource tags.
   }))
   default = []
+}
+
+variable "protected_buckets" {
+  description = "S3 buckets to scan for malware"
+  type        = list(string)
+  default     = []
 }
 
 variable "publishing_destination" {
