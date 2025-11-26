@@ -104,6 +104,10 @@ resource "aws_guardduty_publishing_destination" "this" {
 resource "aws_guardduty_malware_protection_plan" "this" {
   for_each = var.protection_plans
 
+  region = each.value.region
+  role   = each.value.role
+  tags   = each.value.tags
+
   protected_resource {
     s3_bucket {
       bucket_name     = each.value.protected_resource.s3_bucket.bucket_name
@@ -116,8 +120,4 @@ resource "aws_guardduty_malware_protection_plan" "this" {
       status = each.value.actions.tagging.status
     }
   }
-
-  region = each.value.region
-  role   = each.value.role
-  tags   = each.value.tags
 }

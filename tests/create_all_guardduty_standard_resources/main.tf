@@ -4,6 +4,7 @@
 # - Creates a GuardDuty ipset for this account.  Must increase AWS limits to create more than one ipset.
 # - Creates two GuardDuty threatintelsets for this account
 # - Creates a GuardDuty publishing_destination for this account
+# - Creates a GuardDuty Malware Protection for this account
 module "guardduty_standard_resources" {
   source = "../../"
 
@@ -111,11 +112,31 @@ module "guardduty_standard_resources" {
     kms_key_arn      = aws_kms_key.gd_key.arn
     destination_type = "S3"
   }
+
+  protection_plans = {
+    plan1 = {
+      role = aws_iam_role.this.arn
+
+      protected_resource = {
+        s3_bucket = {
+          bucket_name = aws_s3_bucket.bucket.bucket
+        }
+      }
+
+      actions = {
+        tagging = {
+          status = "ENABLED"
+        }
+      }
+
+      region = data.aws_region.current.name
+
+      tags = {
+        environment = "testing"
+      }
+    }
+  }
 }
-
-data "aws_caller_identity" "current" {}
-
-data "aws_region" "current" {}
 
 data "aws_iam_policy_document" "bucket_pol" {
   statement {
@@ -152,7 +173,6 @@ data "aws_iam_policy_document" "bucket_pol" {
 }
 
 data "aws_iam_policy_document" "kms_pol" {
-
   statement {
     sid = "Allow GuardDuty to encrypt findings"
     actions = [
@@ -160,7 +180,7 @@ data "aws_iam_policy_document" "kms_pol" {
     ]
 
     resources = [
-      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+      "arn:${data.aws_partition.current.partition}:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
     ]
 
     principals {
@@ -176,12 +196,12 @@ data "aws_iam_policy_document" "kms_pol" {
     ]
 
     resources = [
-      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+      "arn:${data.aws_partition.current.partition}:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
     ]
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+      identifiers = ["arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:root"]
     }
   }
 }
@@ -237,3 +257,129 @@ resource "aws_s3_object" "ipSet2" {
   bucket  = aws_s3_bucket.bucket.id
   key     = "IpSet2"
 }
+
+resource "aws_iam_role" "this" {
+  name = "guardduty-malware-protection-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "malware-protection-plan.guardduty.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+# Referece: https://docs.aws.amazon.com/guardduty/latest/ug/malware-protection-s3-iam-policy-prerequisite.html
+resource "aws_iam_policy" "this" {
+  name = "guardduty-malware-protection-policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowManagedRuleToSendS3EventsToGuardDuty"
+        Effect = "Allow"
+        Action = [
+          "events:PutRule",
+          "events:DeleteRule",
+          "events:PutTargets",
+          "events:RemoveTargets"
+        ]
+        Resource = [
+          "arn:${data.aws_partition.current.partition}:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/DO-NOT-DELETE-AmazonGuardDutyMalwareProtectionS3*"
+        ]
+        Condition = {
+          StringLike = {
+            "events:ManagedBy" = "malware-protection-plan.guardduty.amazonaws.com"
+          }
+        }
+      },
+      {
+        Sid    = "AllowGuardDutyToMonitorEventBridgeManagedRule"
+        Effect = "Allow"
+        Action = [
+          "events:DescribeRule",
+          "events:ListTargetsByRule"
+        ]
+        Resource = [
+          "arn:${data.aws_partition.current.partition}:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/DO-NOT-DELETE-AmazonGuardDutyMalwareProtectionS3*"
+        ]
+      },
+      {
+        Sid    = "AllowPostScanTag"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObjectTagging",
+          "s3:GetObjectTagging",
+          "s3:PutObjectVersionTagging",
+          "s3:GetObjectVersionTagging"
+        ]
+        Resource = [
+          "arn:${data.aws_partition.current.partition}:s3:::${aws_s3_bucket.bucket.bucket}/*"
+        ]
+      },
+      {
+        Sid    = "AllowEnableS3EventBridgeEvents"
+        Effect = "Allow"
+        Action = [
+          "s3:PutBucketNotification",
+          "s3:GetBucketNotification"
+        ]
+        Resource = [
+          "arn:${data.aws_partition.current.partition}:s3:::${aws_s3_bucket.bucket.bucket}"
+        ]
+      },
+      {
+        Sid    = "AllowPutValidationObject"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject"
+        ]
+        Resource = [
+          "arn:${data.aws_partition.current.partition}:s3:::${aws_s3_bucket.bucket.bucket}/malware-protection-resource-validation-object"
+        ]
+        Condition = {
+          StringEquals = {
+            "aws:ResourceAccount" = data.aws_caller_identity.current.account_id
+          }
+        }
+      },
+      {
+        Sid    = "AllowCheckBucketOwnership"
+        Effect = "Allow"
+        Action = [
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:${data.aws_partition.current.partition}:s3:::${aws_s3_bucket.bucket.bucket}"
+        ]
+      },
+      {
+        Sid    = "AllowMalwareScan"
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:GetObjectVersion"
+        ]
+        Resource = [
+          "arn:${data.aws_partition.current.partition}:s3:::${aws_s3_bucket.bucket.bucket}/*"
+        ]
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "this" {
+  role       = aws_iam_role.this.name
+  policy_arn = aws_iam_policy.this.arn
+}
+
+data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
+data "aws_region" "current" {}
