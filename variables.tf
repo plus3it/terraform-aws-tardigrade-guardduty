@@ -97,7 +97,7 @@ variable "protection_plans" {
       })
     })
   }))
-  default = null
+  default = {}
 }
 
 variable "publishing_destination" {

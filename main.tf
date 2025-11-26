@@ -115,9 +115,12 @@ resource "aws_guardduty_malware_protection_plan" "this" {
     }
   }
 
-  actions {
-    tagging {
-      status = each.value.actions.tagging.status
+  dynamic "actions" {
+    for_each = each.value.actions[*]
+    content {
+      tagging {
+        status = each.value.tagging.status
+      }
     }
   }
 }
