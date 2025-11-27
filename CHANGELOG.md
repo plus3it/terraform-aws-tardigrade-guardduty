@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 **Summary**:
 
-*   Adding support for `malware_protection_plan` attribute
+*   Adding support for `malware_protection_plan`
 *   Adding new `malware_protection_plan` into `tests`
 *   Updating `create_all_guardduty_standard_resources` to support `malware_protection_plan`
 
