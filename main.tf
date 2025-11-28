@@ -132,11 +132,11 @@ resource "aws_guardduty_malware_protection_plan" "this" {
   }
 }
 
-# Create GuardDuty Detector Feature
+# Creates one or more GuardDuty Detector Features
 resource "aws_guardduty_detector_feature" "this" {
-  count = var.detector_feature == null ? 0 : 1
+  for_each = { for feature in var.detector_feature : feature.name => feature }
 
   detector_id = aws_guardduty_detector.this.id
-  name        = var.detector_feature.name
-  status      = var.detector_feature.status
+  name        = each.value.name
+  status      = each.value.status
 }

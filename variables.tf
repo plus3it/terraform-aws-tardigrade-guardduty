@@ -1,6 +1,6 @@
 variable "detector_feature" {
   description = "Provides a resource to manage a single Amazon GuardDuty detector feature."
-  type = object({
+  type = list(object({
     name   = string
     status = string
     region = optional(string)
@@ -8,8 +8,8 @@ variable "detector_feature" {
       name   = string
       status = string
     }))
-  })
-  default = null
+  }))
+  default = []
 }
 
 variable "enable" {

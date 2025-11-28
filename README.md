@@ -39,6 +39,7 @@ You can find example implementations of this module in the tests folder (create_
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_detector_feature"></a> [detector\_feature](#input\_detector\_feature) | Provides a resource to manage a single Amazon GuardDuty detector feature. | <pre>list(object({<br/>    name   = string<br/>    status = string<br/>    region = optional(string)<br/>    additional_configuration = optional(object({<br/>      name   = string<br/>      status = string<br/>    }))<br/>  }))</pre> | `[]` | no |
 | <a name="input_enable"></a> [enable](#input\_enable) | (Optional) Enable GuardDuty monitoring and feedback reporting. Setting to false is equivalent to 'suspending'GuardDuty. Defaults to true. | `bool` | `true` | no |
 | <a name="input_enable_kubernetes_protection"></a> [enable\_kubernetes\_protection](#input\_enable\_kubernetes\_protection) | (Required) If true, enables S3 Protection. Defaults to true. | `bool` | `true` | no |
 | <a name="input_enable_malware_protection"></a> [enable\_malware\_protection](#input\_enable\_malware\_protection) | (Required) If true, enables S3 Protection. Defaults to true. | `bool` | `true` | no |

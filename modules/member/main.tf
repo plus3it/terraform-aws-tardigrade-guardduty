@@ -68,15 +68,6 @@ resource "aws_guardduty_invite_accepter" "this" {
   depends_on = [aws_guardduty_member.this]
 }
 
-# Create GuardDuty Detector Feature in the administrator account
-resource "aws_guardduty_detector_feature" "this" {
-  provider = aws.administrator
-
-  detector_id = aws_guardduty_detector.this.id
-  name        = "LAMBDA_NETWORK_LOGS"
-  status      = "ENABLED"
-}
-
 data "aws_guardduty_detector" "administrator" {
   provider = aws.administrator
 }
