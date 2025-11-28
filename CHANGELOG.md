@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 3.2.0
+
+**Released**: 2025.11.26
+
+**Commit Delta**: [Change from 3.1.1 release](https://github.com/plus3it/terraform-aws-tardigrade-guardduty/compare/3.1.1...3.2.0)
+
+**Summary**:
+
+*   Adding support for `malware_protection_plan`
+*   Adding new `malware_protection_plan` into `tests`
+*   Updating `create_all_guardduty_standard_resources` to support `malware_protection_plan`
+
 ### 3.1.1
 
 **Released**: 2022.08.09

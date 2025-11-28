@@ -77,6 +77,29 @@ variable "threatintelsets" {
   default = []
 }
 
+variable "protection_plans" {
+  description = "Provides a resource to manage a GuardDuty malware protection plan."
+  type = map(object({
+    role   = string
+    region = optional(string)
+    tags   = optional(map(string))
+
+    actions = optional(object({
+      tagging = object({
+        status = string
+      })
+    }))
+
+    protected_resource = object({
+      s3_bucket = object({
+        bucket_name     = string
+        object_prefixes = optional(list(string))
+      })
+    })
+  }))
+  default = {}
+}
+
 variable "publishing_destination" {
   description = "GuardDuty publishing destination"
   type = object({
