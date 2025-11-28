@@ -1,10 +1,12 @@
-# This file creates a standard GuardDuty configuration in a single AWS account.  These include a GuardDuty detector, filters, ipsets, threatintelsets, and publshing destination.  GuardDuty configurations that require multiple AWS accounts are not included in this module, and the terraform code for those configurations has been implemented in seperate submodeles (see the modules section of this project).
+# This file creates a standard GuardDuty configuration in a single AWS account.  These include a GuardDuty detector, filters, ipsets, threatintelsets, publshing destination, detector features, and malware protection plans.  GuardDuty configurations that require multiple AWS accounts are not included in this module, and the terraform code for those configurations has been implemented in seperate submodeles (see the modules section of this project).
 #
 # - Creates a GuardDuty detector for this account
 # - Creates one or more GuardDuty filters for this account if the filter var is not empty.
 # - Creates one or more GuardDuty ipsets for this account if the ipset var is not empty.
 # - Creates one or more GuardDuty threatintelsets for this account if the threatintelset var is not empty.
 # - Creates a GuardDuty publishing_destination for this account if the publishing_destination var is not null.
+# - Creates a GuardDuty Malware Protection Plan.
+# - Creates a GuardDuty Detector Feature.
 #
 # Prerequisites:  This publishing_destination resource assumes the S3 bucket associated with the destination arn exists and the required policies have been created to
 # allow GuardDuty to access the bucket.  It also assumes the kms key associated with the kms key arn exists and has a policy that allows GuardDuty to to use it.
@@ -128,4 +130,13 @@ resource "aws_guardduty_malware_protection_plan" "this" {
       }
     }
   }
+}
+
+# Create GuardDuty Detector Feature
+resource "aws_guardduty_detector_feature" "this" {
+  count = var.detector_feature == null ? 0 : 1
+
+  detector_id = aws_guardduty_detector.this.id
+  name        = var.detector_feature.name
+  status      = var.detector_feature.status
 }
