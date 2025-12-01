@@ -21,14 +21,14 @@ resource "aws_guardduty_detector" "administrator" {
 # - Creates a GuardDuty detector for the member account
 # - Creates a GuardDuty member resource in the administrator account which imnvites the member account to join the administrator account GuardDuty organization.
 # - Creates a GuardDuty invite accepter in the member account to accept the invite from the administrator account
+
+module "guardduty" {
+  source = "../../"
+
+}
+
 module "guardduty_member" {
   source = "../../modules/member"
-
-  enable                       = true
-  enable_s3_protection         = true
-  enable_kubernetes_protection = true
-  enable_malware_protection    = true
-  finding_publishing_frequency = "SIX_HOURS"
 
   providers = {
     aws               = aws
@@ -36,6 +36,7 @@ module "guardduty_member" {
   }
 
   member = {
+    account_id                 = module.guardduty.detector.account_id
     email                      = var.member_email
     invite                     = true
     invitation_message         = "You are invited to join GuardDuty"
