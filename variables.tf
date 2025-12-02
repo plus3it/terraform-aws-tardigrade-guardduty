@@ -1,4 +1,4 @@
-variable "detector_feature" {
+variable "detector_features" {
   description = "Provides a resource to manage a single Amazon GuardDuty detector feature."
   type = list(object({
     name   = string

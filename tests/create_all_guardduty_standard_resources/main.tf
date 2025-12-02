@@ -143,17 +143,13 @@ module "guardduty_standard_resources" {
       name   = "LAMBDA_NETWORK_LOGS"
       status = "ENABLED"
       region = data.aws_region.current.name
-      additional_configuration = {
-        name   = "EC2_AGENT_MANAGEMENT"
-        status = "ENABLED"
-      }
     },
     {
-      name   = "EKS_AUDIT_LOGS"
+      name   = "EKS_RUNTIME_MONITORING"
       status = "ENABLED"
       region = data.aws_region.current.name
       additional_configuration = {
-        name   = "EC2_AGENT_MANAGEMENT"
+        name   = "EKS_ADDON_MANAGEMENT"
         status = "ENABLED"
       }
     },
