@@ -138,7 +138,7 @@ module "guardduty_standard_resources" {
     }
   }
 
-  detector_feature = [
+  detector_features = [
     {
       name   = "LAMBDA_NETWORK_LOGS"
       status = "ENABLED"

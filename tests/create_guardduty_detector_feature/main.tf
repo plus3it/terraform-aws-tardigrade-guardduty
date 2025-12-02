@@ -9,11 +9,11 @@ module "detector_features" {
 
   detector_features = [
     {
-      name   = "LAMBDA_NETWORK_LOGS"
+      name   = "EKS_RUNTIME_MONITORING"
       status = "ENABLED"
       region = data.aws_region.current.name
       additional_configuration = {
-        name   = "EC2_AGENT_MANAGEMENT"
+        name   = "EKS_ADDON_MANAGEMENT"
         status = "ENABLED"
       }
     }
