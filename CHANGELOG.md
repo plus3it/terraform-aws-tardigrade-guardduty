@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.0.0
+
+**Released**: 2025.12.03
+
+**Commit Delta**: [Change from 3.2.0 release](https://github.com/plus3it/terraform-aws-tardigrade-guardduty/compare/3.2.0...4.0.0)
+
+**Summary**:
+
+*   Adding support for `detector_features`
+*   Adding new `detector_features_plan` into `tests`
+*   Updating `create_all_guardduty_standard_resources` to support `detector_features`
+*   Removing `aws_guardduty_detector` from the `member` module. This will now enable users to adapt to the Admin + Member cross-account framework
+
 ### 3.2.0
 
 **Released**: 2025.11.26

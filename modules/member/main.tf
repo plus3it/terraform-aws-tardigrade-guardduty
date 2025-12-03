@@ -2,8 +2,9 @@
 # - Creates a GuardDuty member resource in the administrator account which imnvites the member account to join the administrator account GuardDuty organization.
 # - Creates a GuardDuty invite accepter in the member account to accept the invite from the administrator account
 #
-# Prerequisites:  The administrator account GuardDuty detector must already be enabled
-# - Creates a GuardDuty detector for the member account
+# Prerequisites:
+# - The administrator account GuardDuty detector must already be enabled
+# - The top-level GuardDuty module must also be called to use this `Member` module
 
 # Create GuardDuty member in the administrator account
 resource "aws_guardduty_member" "this" {
