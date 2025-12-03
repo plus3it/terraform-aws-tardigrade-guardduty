@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 *   Adding support for `detector_features`
 *   Adding new `detector_features_plan` into `tests`
 *   Updating `create_all_guardduty_standard_resources` to support `detector_features`
-*   Removing `aws_guardduty_detector` from the `member` module. This will now enable users to adapt to the Admin + Member cross-account framework
+*   Removes `aws_guardduty_detector` from the `member` submodule. Users may instead enable guardduty by calling the top-level module. The `member` submodule now _only_ manages the invite/accept workflow between the guardduty admin account and the guardduty member account. See [tests/create_guardduty_member](tests/create_guardduty_member) for the setup.
 
 ### 3.2.0
 
