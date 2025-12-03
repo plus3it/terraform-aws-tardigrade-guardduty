@@ -1,3 +1,17 @@
+variable "detector_features" {
+  description = "Provides a resource to manage a single Amazon GuardDuty detector feature."
+  type = list(object({
+    name   = string
+    status = string
+    region = optional(string)
+    additional_configuration = optional(object({
+      name   = string
+      status = string
+    }))
+  }))
+  default = []
+}
+
 variable "enable" {
   description = "(Optional) Enable GuardDuty monitoring and feedback reporting. Setting to false is equivalent to 'suspending'GuardDuty. Defaults to true."
   type        = bool

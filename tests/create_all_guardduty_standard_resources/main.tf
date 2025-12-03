@@ -5,6 +5,7 @@
 # - Creates two GuardDuty threatintelsets for this account
 # - Creates a GuardDuty publishing_destination for this account
 # - Creates a GuardDuty Malware Protection for this account
+# - Creates a GuardDuty Detector Feature for this account
 module "guardduty_standard_resources" {
   source = "../../"
 
@@ -136,6 +137,23 @@ module "guardduty_standard_resources" {
       }
     }
   }
+
+  detector_features = [
+    {
+      name   = "LAMBDA_NETWORK_LOGS"
+      status = "ENABLED"
+      region = data.aws_region.current.name
+    },
+    {
+      name   = "EKS_RUNTIME_MONITORING"
+      status = "ENABLED"
+      region = data.aws_region.current.name
+      additional_configuration = {
+        name   = "EKS_ADDON_MANAGEMENT"
+        status = "ENABLED"
+      }
+    },
+  ]
 }
 
 data "aws_iam_policy_document" "bucket_pol" {
