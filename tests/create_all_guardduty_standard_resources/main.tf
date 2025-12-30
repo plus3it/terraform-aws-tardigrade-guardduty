@@ -130,7 +130,7 @@ module "guardduty_standard_resources" {
         }
       }
 
-      region = data.aws_region.current.name
+      region = data.aws_region.current.region
 
       tags = {
         environment = "testing"
@@ -142,12 +142,12 @@ module "guardduty_standard_resources" {
     {
       name   = "LAMBDA_NETWORK_LOGS"
       status = "ENABLED"
-      region = data.aws_region.current.name
+      region = data.aws_region.current.region
     },
     {
       name   = "EKS_RUNTIME_MONITORING"
       status = "ENABLED"
-      region = data.aws_region.current.name
+      region = data.aws_region.current.region
       additional_configuration = {
         name   = "EKS_ADDON_MANAGEMENT"
         status = "ENABLED"
@@ -198,7 +198,7 @@ data "aws_iam_policy_document" "kms_pol" {
     ]
 
     resources = [
-      "arn:${data.aws_partition.current.partition}:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+      "arn:${data.aws_partition.current.partition}:kms:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:key/*"
     ]
 
     principals {
@@ -214,7 +214,7 @@ data "aws_iam_policy_document" "kms_pol" {
     ]
 
     resources = [
-      "arn:${data.aws_partition.current.partition}:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+      "arn:${data.aws_partition.current.partition}:kms:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:key/*"
     ]
 
     principals {
@@ -310,7 +310,7 @@ resource "aws_iam_policy" "this" {
           "events:RemoveTargets"
         ]
         Resource = [
-          "arn:${data.aws_partition.current.partition}:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/DO-NOT-DELETE-AmazonGuardDutyMalwareProtectionS3*"
+          "arn:${data.aws_partition.current.partition}:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:rule/DO-NOT-DELETE-AmazonGuardDutyMalwareProtectionS3*"
         ]
         Condition = {
           StringLike = {
@@ -326,7 +326,7 @@ resource "aws_iam_policy" "this" {
           "events:ListTargetsByRule"
         ]
         Resource = [
-          "arn:${data.aws_partition.current.partition}:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/DO-NOT-DELETE-AmazonGuardDutyMalwareProtectionS3*"
+          "arn:${data.aws_partition.current.partition}:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:rule/DO-NOT-DELETE-AmazonGuardDutyMalwareProtectionS3*"
         ]
       },
       {
