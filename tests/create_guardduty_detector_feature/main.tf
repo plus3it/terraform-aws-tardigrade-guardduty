@@ -11,7 +11,7 @@ module "detector_features" {
     {
       name   = "EKS_RUNTIME_MONITORING"
       status = "ENABLED"
-      region = data.aws_region.current.name
+      region = data.aws_region.current.region
       additional_configuration = {
         name   = "EKS_ADDON_MANAGEMENT"
         status = "ENABLED"
