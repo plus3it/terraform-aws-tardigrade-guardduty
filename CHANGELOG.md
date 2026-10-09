@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### [6.0.1](https://github.com/plus3it/terraform-aws-tardigrade-guardduty/releases/tag/6.0.1)
+
+**Released**: 2026.10.09
+
+**Summary**:
+
+*   Adds `additional_configuration` block support to `RDS_LOGIN_EVENTS` in `detector_features` to manage `RDS_DATA_RISK`
+
 ### [6.0.0](https://github.com/plus3it/terraform-aws-tardigrade-guardduty/releases/tag/6.0.0)
 
 **Released**: 2026.02.20
