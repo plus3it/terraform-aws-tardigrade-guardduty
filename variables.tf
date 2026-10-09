@@ -25,6 +25,11 @@ variable "detector_features" {
       exclude = optional(bool, false)
       status  = optional(string, "ENABLED")
       region  = optional(string)
+      additional_configuration = optional(object({
+        RDS_DATA_RISK = optional(object({
+          status = optional(string, "DISABLED")
+        }), {})
+      }), {})
     }), {})
     EKS_RUNTIME_MONITORING = optional(object({
       exclude = optional(bool, true)
