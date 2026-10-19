@@ -8,6 +8,14 @@ module "detector_features" {
   enable = true
 
   detector_features = {
+    RDS_LOGIN_EVENTS = {
+      status = "ENABLED"
+      additional_configuration = {
+        RDS_DATA_RISK = {
+          status = "DISABLED"
+        }
+      }
+    }
     RUNTIME_MONITORING = {
       exclude = false
       status  = "ENABLED"
